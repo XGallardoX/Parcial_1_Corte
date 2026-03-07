@@ -1,0 +1,2 @@
+modelo,alpha,train_acc,train_f1,train_auc,val_acc,val_f1,val_auc,test_acc,test_f1,test_auc
+MultinomialNB,5.0,0.789,0.789,0.862,0.781,0.7809,0.8534,0.7827,0.7826,0.8552
