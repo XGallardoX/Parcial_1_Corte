@@ -195,19 +195,17 @@ def ablation_table():
 
 @app.get("/ablation_summary", summary="Reporte completo del ablation study")
 def ablation_summary():
-    """Tabla ASCII + URL de grafica + URL de tabla descargable + conclusiones."""
     return {
         "total_experiments": len(ABLATION),
-        "table_ascii":  _build_ascii_table(),
-        "table":        ABLATION,
-        "chart_url":    "/ablation_chart",
-        "table_url":    "/ablation_table",
+        "chart_url":  "/ablation_chart",
+        "table_url":  "/ablation_table",
         "hints": {
             "chart": "curl http://54.84.197.7:8000/ablation_chart -o ablation_chart.png",
             "table": "curl http://54.84.197.7:8000/ablation_table -o ablation_study.txt",
         },
         "conclusions": CONCLUSION,
     }
+
 
 
 @app.get("/comparison", summary="LR+TF-IDF vs DistilBERT (HuggingFace)")
