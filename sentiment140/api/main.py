@@ -56,17 +56,51 @@ ABLATION = [
 ]
 
 COMPARISON = {
-    "metric": "F1-macro (test set — 240 000 tweets de Sentiment140)",
+    "metric": "F1-macro — Sentiment140",
+    "datasets": {
+        "train_n": 1_360_000,
+        "test_n": 240_000,
+    },
     "models": [
-        dict(name="LR + TF-IDF Bigrama (seleccionado)", notebook="04_logistic_regression_JuanCamiloGallardo.ipynb", test_f1=0.8232, test_auc=0.9025, mlflow_duration_sec=10.7, parameters="~100k features x 2 clases"),
-        dict(name="HuggingFace DistilBERT-SST2 (ref.)", notebook="05_distilbert.ipynb", test_f1=0.7081, test_auc=0.7934, mlflow_duration_sec=1.7, parameters="~67 M parametros"),
+        {
+            "name": "LR + TF-IDF Bigrama (modelo seleccionado)",
+            "notebook": "04_logistic_regression_JuanCamiloGallardo.ipynb",
+            "parameters": "1.600.000 tweets",
+            "train": {
+                "n_samples": 1_360_000,
+                "duration_sec": 173.78,     
+                "duration_min": 20.896,
+                "f1_macro": 0.841,
+                "auc": 0.9182,
+            },
+            "test": {
+                "n_samples": 240_000,
+                "duration_sec": 10.7,
+                "duration_min": 0.178,
+                "f1_macro": 0.8232,
+                "auc": 0.9025,
+            },
+        },
+        {
+            "name": "HuggingFace DistilBERT-SST2 (referencia)",
+            "notebook": "05_distilbert.ipynb",
+            "parameters": "66 M parámetros",
+            "train": {
+                "n_samples": 1_360_000,
+                "duration_sec": 43_181.1,   
+                "duration_min": 719.7,
+                "f1_macro": 0.7081,
+                "auc": 0.7934,
+            },
+            "test": {
+                "n_samples": 240_000,
+                "duration_sec": 7_620.2,
+                "duration_min": 127.0,
+                "f1_macro": 0.7081,
+                "auc": 0.7934,
+            },
+        },
     ],
-    "conclusion": (
-        "LR + TF-IDF Bigrama supera a DistilBERT-SST2 en +15.1 pp de F1-macro "
-        "(0.8232 vs 0.7081). DistilBERT-SST2 fue entrenado sobre reseñas de peliculas "
-        "(SST-2), no sobre tweets, por lo que su dominio no coincide con Sentiment140. "
-        "El modelo local es ademas ~67 M parametros mas ligero y ~6x mas rapido."
-    ),
 }
 
 WORK_DISTRIBUTION = [
