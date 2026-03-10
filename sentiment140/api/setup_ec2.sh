@@ -1,74 +1,62 @@
 #!/bin/bash
 set -e
 
-REPO_URL="https://github.com/XGallardoX/Parcial_1_Corte.git"
-CLONE_DIR="$HOME/NLP/Parcial_1_Corte"
-PROJECT_DIR="$CLONE_DIR/sentiment140"
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"   # .../sentiment140/api
+PROJECT_DIR="$(dirname "$SCRIPT_DIR")"                        # .../sentiment140
+CLONE_DIR="$(dirname "$PROJECT_DIR")"                         # .../Parcial_1_Corte
+VENV_DIR="$PROJECT_DIR/venv"
 API_PORT=8000
 
 echo "============================================"
 echo " EC2-B Setup — Sentiment API"
 echo "============================================"
+echo "SCRIPT_DIR : $SCRIPT_DIR"
+echo "PROJECT_DIR: $PROJECT_DIR"
+echo "CLONE_DIR  : $CLONE_DIR"
 
 # 1. Dependencias del sistema
 sudo apt-get update -y
-sudo apt-get install -y python3 python3-pip python3-venv git
+sudo apt-get install -y python3 python3-pip python3-venv git curl
 
-# 2. Clonar o actualizar repo
-mkdir -p "$HOME/NLP"
-if [ -d "$CLONE_DIR/.git" ]; then
-    echo "Repo ya existe, haciendo git pull..."
-    cd "$CLONE_DIR"
-    git pull
-else
-    echo "Clonando repo..."
-    git clone "$REPO_URL" "$CLONE_DIR"
-fi
+# 2. Git pull
+echo ">>> git pull..."
+cd "$CLONE_DIR"
+git pull
 
-# 3. Ir al directorio del proyecto
+# 3. Ir al directorio raíz del proyecto
 cd "$PROJECT_DIR"
 echo "Working dir: $(pwd)"
 
-# 4. Crear venv si no existe
-if [ ! -d "venv" ]; then
-    python3 -m venv venv
+# 4. Crear venv solo si no existe
+if [ ! -d "$VENV_DIR" ]; then
+    echo "Creando venv..."
+    python3 -m venv "$VENV_DIR"
 fi
 
-# 5. Activar venv
-source venv/bin/activate
+# 5. Activar venv con ruta absoluta
+source "$VENV_DIR/bin/activate"
+echo "Python: $(which python3)"
 
 # 6. Actualizar pip
 pip install --upgrade pip
 
-# 7. Crear requirements.txt si no existe en el repo
-if [ ! -f "api/requirements.txt" ]; then
-    echo "requirements.txt no encontrado, creando..."
-    cat > api/requirements.txt << 'REQS'
-fastapi==0.115.0
-uvicorn[standard]==0.30.6
-scikit-learn==1.5.2
-joblib==1.4.2
-numpy==1.26.4
-matplotlib==3.9.2
-pydantic==2.9.2
-REQS
-fi
+# 7. Instalar dependencias
+pip install -r "$SCRIPT_DIR/requirements.txt"
 
-# 8. Instalar dependencias
-pip install -r api/requirements.txt
-
-# 9. Construir pipeline si no existe
-if [ ! -f "models/best_model.pkl" ]; then
+# 8. Construir pipeline si no existe
+if [ ! -f "$PROJECT_DIR/models/best_model.pkl" ]; then
     echo "Pipeline no encontrado, construyendo..."
-    python3 build_pipeline.py
+    python3 "$PROJECT_DIR/build_pipeline.py"
 else
     echo "Pipeline ya existe: models/best_model.pkl ✔"
 fi
 
 echo ""
 echo "✅ Setup completo. Iniciando API en puerto $API_PORT..."
-echo "   URL: http://$(curl -s ifconfig.me):$API_PORT/docs"
+PUBLIC_IP=$(curl -s ifconfig.me 2>/dev/null || echo "TU_IP_PUBLICA")
+echo "   Swagger UI: http://$PUBLIC_IP:$API_PORT/docs"
 echo ""
 
-# 10. Arrancar uvicorn desde PROJECT_DIR (no desde api/)
-uvicorn api.main:app --host 0.0.0.0 --port $API_PORT --workers 1
+# 9. PYTHONPATH=api para que main.py encuentre schemas e inference
+cd "$PROJECT_DIR"
+PYTHONPATH="$SCRIPT_DIR" uvicorn api.main:app --host 0.0.0.0 --port $API_PORT --workers 1
