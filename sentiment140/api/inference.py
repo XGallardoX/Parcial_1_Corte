@@ -1,20 +1,14 @@
 """
 inference.py — Carga del pipeline y lógica de predicción
-Estructura del repo:
-    sentiment140/
-        api/inference.py          ← este archivo
-        models/best_model.pkl     ← pipeline serializado
-        models/best_model_card.json
+Rutas esperadas (relativas a la raíz del proyecto sentiment140/):
+    models/best_model.pkl
+    models/best_model_card.json
 """
-import re
-import time
-import json
-import joblib
+import re, time, json, joblib
 import numpy as np
 from pathlib import Path
 
-# api/ -> sentiment140/
-BASE_DIR      = Path(__file__).parent.parent
+BASE_DIR      = Path(__file__).parent.parent   # api/ -> sentiment140/
 PIPELINE_PATH = BASE_DIR / "models" / "best_model.pkl"
 CARD_PATH     = BASE_DIR / "models" / "best_model_card.json"
 
@@ -36,7 +30,6 @@ def get_model_card() -> dict:
         return json.load(f)
 
 def clean_raw_text(text: str) -> str:
-    """Misma función que vive dentro del pipeline serializado."""
     text = re.sub(r"http\S+|www\S+", "", text)
     text = re.sub(r"@\w+", "", text)
     text = re.sub(r"#\w+", "", text)
@@ -45,11 +38,10 @@ def clean_raw_text(text: str) -> str:
 
 def run_inference(texts: list) -> tuple:
     pipeline = get_pipeline()
-    t0       = time.perf_counter()
-    preds    = pipeline.predict(texts)
-    probas   = pipeline.predict_proba(texts)
-    elapsed  = round(time.perf_counter() - t0, 4)
-    return preds, probas, elapsed
+    t0 = time.perf_counter()
+    preds  = pipeline.predict(texts)
+    probas = pipeline.predict_proba(texts)
+    return preds, probas, round(time.perf_counter() - t0, 4)
 
 def build_prediction_item(text: str, pred: int, proba: np.ndarray) -> dict:
     return {
