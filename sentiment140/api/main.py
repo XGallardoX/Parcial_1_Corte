@@ -71,11 +71,11 @@ COMPARISON = {
 
 WORK_DISTRIBUTION = [
     dict(member="Alan Osorio",          n_experiments=6, best_model="Baseline_BoW-NoElongation",       best_f1=0.7835,
-         experiments=["Baseline_BoW-NoElongation F1=0.7835", "Baseline_BoW-EmojisToText F1=0.7826", "Baseline_TF-IDF_Unigrama F1=0.7715", "MLP_TFIDF-SVD F1=0.7709", "LDA_TFIDF-SVD F1=0.7312", "DecisionTree_TFIDF-SVD F1=0.6471"]),
+         experiments=["Baseline_BoW-NoElongation F1=0.7835", "Baseline_BoW-EmojisToText F1=0.7826", "Baseline_TF-IDF_Unigrama F1=0.7715", "MLP_TFIDF-Bigrama F1=0.7709", "LDA_TFIDF-Bigrama F1=0.7312", "DecisionTree_TFIDF-Bigrama F1=0.6471"]),
     dict(member="Juan Camilo Gallardo", n_experiments=5, best_model="LogisticRegression_TFIDFBigrama SELECCIONADO", best_f1=0.8232,
          experiments=["Baseline_MultinomialNB_BoW F1=0.7826", "Baseline_TFIDF-Bigrama F1=0.8020", "FFNN_TFIDFBigrama F1=0.8198", "XGBoost_TFIDFBigrama F1=0.7385", "LogisticRegression_TFIDFBigrama F1=0.8232 SELECCIONADO"]),
     dict(member="Santiago Diaz",        n_experiments=6, best_model="LinearRegression_TFIDF",           best_f1=0.8124,
-         experiments=["Baseline_stopwords_BoW F1=0.7651", "Baseline_lematizacion_BoW F1=0.7600", "Baseline_Puntuacion_BoW F1=0.7582", "LinearRegression_TFIDF F1=0.8124", "DNN_TFIDF-SVD F1=0.7773", "RandomForest_TFIDF-SVD F1=0.7322"]),
+         experiments=["Baseline_stopwords_BoW F1=0.7651", "Baseline_lematizacion_BoW F1=0.7600", "Baseline_Puntuacion_BoW F1=0.7582", "LinearRegression_TFIDF F1=0.8124", "DNN_TFIDF-Bigrama F1=0.7773", "RandomForest_TFIDF-Bigrama F1=0.7322"]),
 ]
 
 CONCLUSION = (
