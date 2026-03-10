@@ -7,7 +7,7 @@
 
 set -e   # Detener en cualquier error
 
-REPO_URL="https://github.com/TU_USUARIO/TU_REPO.git"   # ← cambiar
+REPO_URL="https://github.com/XGallardoX/Parcial_1_Corte.git"  
 PROJECT_DIR="$HOME/sentiment140"
 API_PORT=8000
 
@@ -16,8 +16,8 @@ echo " EC2-B Setup — Sentiment API"
 echo "============================================"
 
 # 1. Instalar dependencias del sistema
-sudo yum update -y
-sudo yum install -y python3 python3-pip git
+sudo apt update -y
+sudo apt install -y python3 python3-pip git
 
 # 2. Clonar el repositorio
 if [ -d "$PROJECT_DIR" ]; then
