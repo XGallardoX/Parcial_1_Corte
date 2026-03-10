@@ -263,34 +263,33 @@ def work_distribution():
 def work_distribution_table():
     """Retorna la tabla ASCII de distribución de trabajo como archivo de texto descargable."""
     data = work_distribution()
-    members = data["members"]
-    total_experiments = data["total_experiments"]
     
-    # Construir contenido de la tabla simple
-    content = f"DISTRIBUCION DE TRABAJO — {data['project']}\n"
-    content += f"{' · '.join(members)}\n"
-    content += "=" * 80 + "\n\n"
+    # Construir tabla interna (equivalente a _build_ascii_table())
+    table_lines = ["DISTRIBUCION DE TRABAJO — " + data["project"]]
+    table_lines.append(" · ".join(data["members"]))
+    table_lines.append("=" * 80)
     
-    # Tabla principal: resumen general
-    content += "RESUMEN GENERAL:\n"
-    content += f"Total de experimentos: {total_experiments}\n"
-    content += f"Referencia HF: {data['hf_reference']}\n\n"
+    # Resumen
+    table_lines.append("")
+    table_lines.append("RESUMEN:")
+    table_lines.append(f"Total experimentos: {data['total_experiments']}")
+    table_lines.append(f"Referencia HF: {data['hf_reference']}")
     
-    # Tabla de distribución (asumiendo WORK_DISTRIBUTION es dict member -> experiments)
-    content += "DISTRIBUCION POR MIEMBRO:\n"
-    content += f"{'-' * 50}\n"
-    content += f"{'Miembro':<20} | {'Experimentos':<12} | %\n"
-    content += f"{'-' * 50}\n"
-    
+    # Distribución (asumiendo data["distribution"] es dict member:experiments)
+    table_lines.append("")
+    table_lines.append("DISTRIBUCION POR MIEMBRO:")
+    table_lines.append("-" * 50)
+    table_lines.append(f"{'Miembro':<20} | {'Experimentos':<10} | %")
+    table_lines.append("-" * 50)
+    total_exps = data["total_experiments"]
     for member, exps in data["distribution"].items():
-        pct = (exps / total_experiments) * 100
-        content += f"{member:<20} | {exps:<12} | {pct:5.1f}%\n"
+        pct = round((exps / total_exps) * 100, 1)
+        table_lines.append(f"{member:<20} | {exps:<10} | {pct}%")
+    table_lines.append("-" * 50)
+    table_lines.append(f"{'TOTAL':<20} | {total_exps:<10} | 100.0%")
     
-    content += f"{'-' * 50}\n"
-    content += f"TOTAL{'':<20} | {total_experiments:<12} | 100.0%\n\n"
-    
-    content += "=" * 80 + "\n"
-    content += f"NOTAS:\n- Total experimentos: {total_experiments}\n- Basado en WORK_DISTRIBUTION\n"
+    content = "\n".join(table_lines) + "\n\n" + "=" * 80 + "\n"
+    content += "NOTAS:\n- Generado desde work_distribution()\n- Total: 17 experimentos\n"
     
     return Response(
         content=content.encode("utf-8"),
