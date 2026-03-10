@@ -1,0 +1,65 @@
+{
+    "model_name": "LogisticRegression_TF-IDF_Bigrama",
+    "author": "Juan Camilo Gallardo",
+    "created_at": "2026-03-10 01:45:10",
+    "notebook": "04_logistic_regression_JuanCamiloGallardo.ipynb",
+    "dataset": "Sentiment140 (Twitter)",
+    "task": "Binary Sentiment Classification (Negativo=0 / Positivo=1)",
+    "model_type": "LogisticRegression",
+    "hyperparameters": {
+        "C": 1.0,
+        "solver": "saga",
+        "max_iter": 1000,
+        "random_state": 42
+    },
+    "encoding": {
+        "type": "TfidfVectorizer",
+        "ngram_range": [
+            1,
+            2
+        ],
+        "max_features": 100000,
+        "min_df": 5,
+        "max_df": 0.95,
+        "sublinear_tf": true
+    },
+    "data_splits": {
+        "X_tr_rows": 1088000,
+        "X_val_rows": 272000,
+        "X_train_tfidf_rows": 1360000,
+        "X_test_tfidf_rows": 240000,
+        "vocab_size": 100000
+    },
+    "metrics": {
+        "train": {
+            "accuracy": 0.841,
+            "f1_macro": 0.841,
+            "precision": 0.8411,
+            "recall": 0.841,
+            "roc_auc": 0.9182
+        },
+        "val": {
+            "accuracy": 0.8415,
+            "f1_macro": 0.8415,
+            "precision": 0.8416,
+            "recall": 0.8415,
+            "roc_auc": 0.9183
+        },
+        "test": {
+            "accuracy": 0.8232,
+            "f1_macro": 0.8232,
+            "precision": 0.8234,
+            "recall": 0.8233,
+            "roc_auc": 0.9025
+        }
+    },
+    "artifacts": {
+        "model": "best_model.pkl",
+        "vectorizer": "tfidf_vectorizer.pkl",
+        "results_csv": "results_lr.csv"
+    },
+    "mlflow": {
+        "experiment": "Parcial1NLP",
+        "run_name": "LogisticRegressionTFIDFBigrama"
+    }
+}
