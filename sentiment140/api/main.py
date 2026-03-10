@@ -258,3 +258,42 @@ def work_distribution():
         "hf_reference": 1,
         "distribution": WORK_DISTRIBUTION,
     }
+
+@app.get("/work_distribution_table", summary="Distribucion de experimentos por miembro en tabla ASCII descargable", response_class=Response)
+def work_distribution_table():
+    """Retorna la tabla ASCII de distribución de trabajo como archivo de texto descargable."""
+    data = work_distribution()
+    members = data["members"]
+    total_experiments = data["total_experiments"]
+    
+    # Construir contenido de la tabla simple
+    content = f"DISTRIBUCION DE TRABAJO — {data['project']}\n"
+    content += f"{' · '.join(members)}\n"
+    content += "=" * 80 + "\n\n"
+    
+    # Tabla principal: resumen general
+    content += "RESUMEN GENERAL:\n"
+    content += f"Total de experimentos: {total_experiments}\n"
+    content += f"Referencia HF: {data['hf_reference']}\n\n"
+    
+    # Tabla de distribución (asumiendo WORK_DISTRIBUTION es dict member -> experiments)
+    content += "DISTRIBUCION POR MIEMBRO:\n"
+    content += f"{'-' * 50}\n"
+    content += f"{'Miembro':<20} | {'Experimentos':<12} | %\n"
+    content += f"{'-' * 50}\n"
+    
+    for member, exps in data["distribution"].items():
+        pct = (exps / total_experiments) * 100
+        content += f"{member:<20} | {exps:<12} | {pct:5.1f}%\n"
+    
+    content += f"{'-' * 50}\n"
+    content += f"TOTAL{'':<20} | {total_experiments:<12} | 100.0%\n\n"
+    
+    content += "=" * 80 + "\n"
+    content += f"NOTAS:\n- Total experimentos: {total_experiments}\n- Basado en WORK_DISTRIBUTION\n"
+    
+    return Response(
+        content=content.encode("utf-8"),
+        media_type="text/plain; charset=utf-8",
+        headers={"Content-Disposition": "attachment; filename=work_distribution.txt"},
+    )
