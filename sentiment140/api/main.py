@@ -282,11 +282,12 @@ def work_distribution_table():
     table_lines.append(f"{'Miembro':<20} | {'Experimentos':<10} | %")
     table_lines.append("-" * 50)
     total_exps = data["total_experiments"]
-    for member, exps in data["distribution"].items():
-        pct = round((exps / total_exps) * 100, 1)
+    for item in data["distribution"]:                   # ✅ itera la lista
+        member = item["member"]
+        exps   = item["n_experiments"]
+        pct    = round((exps / total_exps) * 100, 1)
         table_lines.append(f"{member:<20} | {exps:<10} | {pct}%")
-    table_lines.append("-" * 50)
-    table_lines.append(f"{'TOTAL':<20} | {total_exps:<10} | 100.0%")
+
     
     content = "\n".join(table_lines) + "\n\n" + "=" * 80 + "\n"
     content += "NOTAS:\n- Generado desde work_distribution()\n- Total: 17 experimentos\n"
